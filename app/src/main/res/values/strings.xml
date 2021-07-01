@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Movies Rating Perm</string>
+    <string name="poster_is_movie">Постер к фильму</string>
+    <string name="most_popular">Самыe популярные</string>
+    <string name="top_rated">Наиболее рейтинговые</string>
+    <string name="successful_load_data">Успешная загрузка данных</string>
+    <string name="failed_load_data">Ошибка связи с сервером</string>
+</resources>
