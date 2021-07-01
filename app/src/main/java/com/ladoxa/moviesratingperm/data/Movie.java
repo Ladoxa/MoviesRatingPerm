@@ -1,5 +1,7 @@
 package com.ladoxa.moviesratingperm.data;
 
+import com.google.gson.annotations.SerializedName;
+
 // класс будем испльзовать в БД
 public class Movie {
 //
@@ -8,16 +10,34 @@ public class Movie {
 //    private static  String LANGUAGE_VALUE;// = "ru-RU";
 //    private static  String SORT_BY_POPULARITY_VALUE;// = "popularity.desc";
 
-
+    @SerializedName("id")
     private int id;  //  id фильма
+
+    @SerializedName("vote_count")
     private int voteCount; // количество голосов
+
+    @SerializedName("title")
     private String title; // название
+
+    @SerializedName("original_title")
     private String originalTitle; // оригинальное название
+
+    @SerializedName("overview")
     private String overview; // описание фильма
+
+    @SerializedName("poster_path")
     private String posterPath; // путь к постеру
-    private String bigPosterPath; // путь к постеру
+
+
+    private String bigPosterPath;// путь к постеру
+
+    @SerializedName("backdrop_path")
     private String backdropPath; // фоновое изображение
+
+    @SerializedName("release_date")
     private String releaseDate; // дата релиза
+
+    @SerializedName("vote_average")
     private double voteAverage; // средний голос
 
 
@@ -84,6 +104,14 @@ public class Movie {
 
     public String getBackdropPath() {
         return backdropPath;
+    }
+
+    public String getBigPosterPath() {
+        return bigPosterPath;
+    }
+
+    public void setBigPosterPath(String bigPosterPath) {
+        this.bigPosterPath = bigPosterPath;
     }
 
     public void setBackdropPath(String backdropPath) {

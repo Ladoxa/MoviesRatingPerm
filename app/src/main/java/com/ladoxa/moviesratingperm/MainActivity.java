@@ -1,12 +1,15 @@
 package com.ladoxa.moviesratingperm;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ladoxa.moviesratingperm.adapter.MovieAdapter;
 import com.ladoxa.moviesratingperm.data.Movie;
 import com.ladoxa.moviesratingperm.data.MovieResult;
 import com.ladoxa.moviesratingperm.services.MovieService;
@@ -30,15 +33,21 @@ public class MainActivity extends AppCompatActivity {
     private static final String SORT_BY_POPULARITY_VALUE = "popularity.desc";
     private static final String SORT_BY_TOP_RATED_VALUE = "vote_average.desc";
 
+    private static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
+    private static final String BASE_SMALL_POSTER_SIZE = "w185";
+    private static final String BASE_BIG_POSTER_SIZE = "w780";
+
     public static final int POPULARITY = 0;
     public static final int TOP_RATED = 1;
 
     //private static RetrofitService service;
-    private static MovieService service2;
+    private static MovieService service;
     String methodOfSort = SORT_BY_POPULARITY_VALUE;
 
+    private RecyclerView recyclerViewPoster;
+    private MovieAdapter movieAdapter;
 
-   ArrayList<Movie> movieResults;
+    private ArrayList<Movie> movieResults;
 
 
 
@@ -47,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("123create", "create");
+        initRetrofit();
 
-       initRetrofit();
+
+
 
 
 
@@ -64,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 //            methodOfSort = SORT_BY_TOP_RATED_VALUE;
 //        }
 
+
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .build();
 
@@ -75,21 +87,29 @@ public class MainActivity extends AppCompatActivity {
                 .build());
 
 //        service = retrofit.create(RetrofitService.class);
-        service2 = retrofit.create(MovieService.class);
+        service = retrofit.create(MovieService.class);
 
-        service2.getMoviesResult(API_KEY, LANGUAGE_VALUE, SORT_BY_POPULARITY_VALUE, 2).enqueue(new Callback<MovieResult>() {
+        service.getMoviesResult(API_KEY, LANGUAGE_VALUE, SORT_BY_POPULARITY_VALUE, 1).enqueue(new Callback<MovieResult>() {
             @Override
             public void onResponse(Call<MovieResult> call, Response<MovieResult> response) {
                 Toast.makeText(getApplicationContext(), getString(R.string.successful_load_data), Toast.LENGTH_LONG).show();
-                movieResults = response.body().getResults();
+                movieResults = ResultMovieFromJSON.getResultMovieFromJSON(response.body().getResults());
                 printMoviesList(movieResults);
+                recyclerViewPoster = findViewById(R.id.recyclerViewPoster);
+                recyclerViewPoster.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+                movieAdapter = new MovieAdapter();
+                Log.d("123create", "create");
+                movieAdapter.setMovies(movieResults);
+                recyclerViewPoster.setAdapter(movieAdapter);
             }
 
             @Override
             public void onFailure(Call<MovieResult> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), getString(R.string.failed_load_data), Toast.LENGTH_LONG).show();
+
             }
         });
+
 
 //        service.getMoviesPage(API_KEY, LANGUAGE_VALUE, SORT_BY_POPULARITY_VALUE, 2).enqueue(new Callback<Movie>() {
 //
@@ -119,9 +139,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void printMoviesList(ArrayList<Movie> list){
         for (int i = 0; i < list.size(); i++) {
+
             Log.d("123create", list.get(i).getTitle());
+
         }
     };
+
+
 
 
 }
